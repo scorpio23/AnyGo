@@ -1,8 +1,39 @@
-<ion-view view-title="Dashboard">
-  <ion-content class="padding">
-    <div>
-      <ion-content ng-controller="DashCtrl">
-          <div id="map" data-tap-disabled="true"></div>
-      </ion-content>
-  </div>  
+<ion-view view-title="Send Item">
+  <ion-content class="padding" ng-controller="DashCtrl">
+      <div>
+        <div id="map" data-tap-disabled="true"></div>
+        <div width="100%" class="list list-inset">
+              
+              <!--
+              <label class="item item-input">
+                  <input type="text" ng-model="user.from" placeholder="Where should it be picked up from?">
+              </label>
+              <label class="item item-input">
+                  <input type="text" ng-model="user.to" placeholder="Where should it be delivered to?">
+              </label>
+              -->
+              
+              <div class="list">
+                <label class="item item-input item-floating-label">
+                  <span class="input-label">Where should it be picked up from?</span>
+                  <input type="text" placeholder="Where should it be picked up from?">
+                </label>
+                <label class="item item-input item-floating-label">
+                  <span class="input-label">Where should it be delivered to?</span>
+                  <input type="text" placeholder="Where should it be delivered to?">
+                </label>
+              </div>
+              
+              <!--
+              <button class="button button-block button-positive icon-right ion-chevron-right button-calm" href="#/tab/send-item">
+                Continue
+              </button>
+              -->
+              
+              <a class="button button-block button-positive icon-right ion-chevron-right button-calm" href="#/tab/send-item">Continue</a>
+              
+              <br>
+          </div>
+      </div>
+  </ion-content>
 </ion-view>

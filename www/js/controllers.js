@@ -46,6 +46,16 @@ angular.module('starter.controllers', [])
   };
 })
 
+// Send Item Controler
+.controller('SendItemCtrl', function($scope, $stateParams) {
+  console.log("## Inside send item controler");
+})
+
+// Send confirmation Controler
+.controller('SendConfirmationCtrl', function($scope, $stateParams) {
+  console.log("## Inside send confirmation controler");
+})
+
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);
 })

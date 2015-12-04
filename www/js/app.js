@@ -49,6 +49,28 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     }
   })
+  
+  // Show item details
+  .state('tab.send-item', {
+    url: '/send-item',
+    views: {
+      'tab-dash': {
+        templateUrl: 'templates/page-send-item.html',
+        controller: 'SendItemCtrl'
+      }
+    }
+  })
+  
+  // Show send confirmation details
+  .state('tab.send-confirmation', {
+    url: '/send-confirmation',
+    views: {
+      'tab-dash': {
+        templateUrl: 'templates/page-send-confirmation',
+        controller: 'SendConfirmationCtrl'
+      }
+    }
+  })
 
   .state('tab.chats', {
       url: '/chats',
