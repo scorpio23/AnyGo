@@ -66,7 +66,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     url: '/send-confirmation',
     views: {
       'tab-dash': {
-        templateUrl: 'templates/page-send-confirmation',
+        templateUrl: 'templates/page-send-confirmation.html',
         controller: 'SendConfirmationCtrl'
       }
     }
