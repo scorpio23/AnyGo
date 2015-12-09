@@ -15,8 +15,8 @@ function initMap() {
   var destination_input = document.getElementById('destination-input');
   var modes = document.getElementById('mode-selector');
 
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(origin_input);
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(destination_input);
+  //map.controls[google.maps.ControlPosition.TOP_LEFT].push(origin_input);
+  //map.controls[google.maps.ControlPosition.TOP_LEFT].push(destination_input);
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(modes);
 
   var origin_autocomplete = new google.maps.places.Autocomplete(origin_input);
@@ -49,7 +49,7 @@ function initMap() {
   origin_autocomplete.addListener('place_changed', function() {
     var place = origin_autocomplete.getPlace();
     if (!place.geometry) {
-      window.alert("Autocomplete's returned place contains no geometry");
+      window.alert("Autocomplete's returned place contains no geometry - directions");
       return;
     }
     expandViewportToFitPlace(map, place);
@@ -64,7 +64,7 @@ function initMap() {
   destination_autocomplete.addListener('place_changed', function() {
     var place = destination_autocomplete.getPlace();
     if (!place.geometry) {
-      window.alert("Autocomplete's returned place contains no geometry");
+      window.alert("Autocomplete's returned place contains no geometry - directions");
       return;
     }
     expandViewportToFitPlace(map, place);

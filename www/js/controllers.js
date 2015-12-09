@@ -1,10 +1,10 @@
 angular.module('starter.controllers', [])
 
-//.controller('DashCtrl', function($scope) {})
 .controller('DashCtrl', function($scope, $ionicLoading) {
  
     console.log("##In Google.maps.event.addDomListener");
-/***
+
+    /**
    google.maps.event.addDomListener(window, 'load', function() {
     console.log("Finish In Google.maps.event.addDomListener");
         var myLatlng = new google.maps.LatLng(1.395621, 103.91228);
@@ -28,7 +28,7 @@ angular.module('starter.controllers', [])
  
         $scope.map = map;
     });
- **/
+    **/
     
   var origin_place_id = null;
   var destination_place_id = null;
@@ -80,7 +80,7 @@ angular.module('starter.controllers', [])
   origin_autocomplete.addListener('place_changed', function() {
     var place = origin_autocomplete.getPlace();
     if (!place.geometry) {
-      window.alert("Autocomplete's returned place contains no geometry");
+      window.alert("Autocomplete's returned place contains no geometry - controler");
       return;
     }
     expandViewportToFitPlace(map, place);
@@ -95,7 +95,7 @@ angular.module('starter.controllers', [])
   destination_autocomplete.addListener('place_changed', function() {
     var place = destination_autocomplete.getPlace();
     if (!place.geometry) {
-      window.alert("Autocomplete's returned place contains no geometry");
+      window.alert("Autocomplete's returned place contains no geometry - controler");
       return;
     }
     expandViewportToFitPlace(map, place);
@@ -124,6 +124,20 @@ angular.module('starter.controllers', [])
       }
     });
   }
+    
+    
+    
+    // adding
+    $scope.disableTap = function(){
+    container = document.getElementsByClassName('pac-container');
+    // disable ionic data tab
+    angular.element(container).attr('data-tap-disabled', 'true');
+    // leave input field if google-address-entry is selected
+    angular.element(container).on("click", function(){
+        document.getElementById('origin-input').blur();
+        document.getElementById('destination-input').blur();
+    });
+  };
     
 })
 
