@@ -71,6 +71,30 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     }
   })
+  
+  // Page Loading
+  // Show list of accepted courier
+  .state('tab.page-receive-couriers', {
+    url: '/page-receive-couriers',
+    views: {
+      'tab-dash': {
+        templateUrl: 'templates/page-receive-couriers.html',
+        controller: 'PageRecvCourierCtrl'
+      }
+    }
+  })
+  
+  // Show courier confirmation details
+  .state('tab.page-courier-confirmation', {
+    url: '/page-courier-confirmation/:chatId',
+    views: {
+      'tab-dash': {
+        templateUrl: 'templates/page-courier-confirmation.html',
+        controller: 'ChatDetailCtrl'
+      }
+    }
+  })
+  
 
   .state('tab.chats', {
       url: '/chats',
