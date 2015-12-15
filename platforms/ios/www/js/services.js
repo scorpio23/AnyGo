@@ -28,7 +28,7 @@ angular.module('starter.services', [])
     id: 4,
     name: 'Mike Harrington',
     lastText: 'This is wicked good ice cream.',
-    face: 'https://pbs.twimg.com/profile_images/578237281384841216/R3ae1n61.png'
+    face: 'https://avatars3.githubusercontent.com/u/11214?v=3&s=460'
   }];
 
   return {

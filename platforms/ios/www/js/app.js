@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ion-place-tools'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -49,6 +49,52 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     }
   })
+  
+  // Show item details
+  .state('tab.send-item', {
+    url: '/send-item',
+    views: {
+      'tab-dash': {
+        templateUrl: 'templates/page-send-item.html',
+        controller: 'SendItemCtrl'
+      }
+    }
+  })
+  
+  // Show send confirmation details
+  .state('tab.send-confirmation', {
+    url: '/send-confirmation',
+    views: {
+      'tab-dash': {
+        templateUrl: 'templates/page-send-confirmation.html',
+        controller: 'SendConfirmationCtrl'
+      }
+    }
+  })
+  
+  // Page Loading
+  // Show list of accepted courier
+  .state('tab.page-receive-couriers', {
+    url: '/page-receive-couriers',
+    views: {
+      'tab-dash': {
+        templateUrl: 'templates/page-receive-couriers.html',
+        controller: 'PageRecvCourierCtrl'
+      }
+    }
+  })
+  
+  // Show courier confirmation details
+  .state('tab.page-courier-confirmation', {
+    url: '/page-courier-confirmation/:chatId',
+    views: {
+      'tab-dash': {
+        templateUrl: 'templates/page-courier-confirmation.html',
+        controller: 'ChatDetailCtrl'
+      }
+    }
+  })
+  
 
   .state('tab.chats', {
       url: '/chats',

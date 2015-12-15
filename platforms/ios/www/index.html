@@ -14,15 +14,21 @@
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
+    
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
 
     <!-- your app's js -->
+    <script src="js/direction.js"></script>
+    <script src="js/ion-place-autocomplete.js"></script>
     <script src="js/app.js"></script>
     <script src="js/controllers.js"></script>
     <script src="js/services.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBV4yKp4JqVGxFkfKgxnATIMvcPJDHUQ6E&sensor=true"></script>
+    <!--
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBV4yKp4JqVGxFkfKgxnATIMvcPJDHUQ6E&amp;libraries=places&amp;callback=initMap" async defer></script>
+    -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBV4yKp4JqVGxFkfKgxnATIMvcPJDHUQ6E&amp;libraries=places"></script>
   </head>
   <body ng-app="starter" class="platform-ios platform-cordova platform-webview">
     <!--
