@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ion-place-tools'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ion-place-tools', 'firebase'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -20,10 +20,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       // org.apache.cordova.statusbar required
       StatusBar.styleLightContent();
     }
+<<<<<<< HEAD
     
     // Parse initialization
     Parse.initialize("QulU4nLdAg84OoM0Yvd8LfE8dwNNqD2o4UW4mo1f", "yl8ZDO4kpwmtQYrvS95zjWVwkSwnlyC5cznauYxT");
     
+=======
+      
+    // Parse initialization
+    Parse.initialize("QulU4nLdAg84OoM0Yvd8LfE8dwNNqD2o4UW4mo1f", "yl8ZDO4kpwmtQYrvS95zjWVwkSwnlyC5cznauYxT");
+      
+>>>>>>> aa224c6bd47ce778cf55552aae19ed2fe5e53f55
   });
 })
 

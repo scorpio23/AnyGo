@@ -1,8 +1,55 @@
-<ion-view view-title="Dashboard">
-  <ion-content class="padding">
-    <div>
-      <ion-content ng-controller="DashCtrl">
-          <div id="map" data-tap-disabled="true"></div>
-      </ion-content>
-  </div>  
+<ion-view view-title="Send Item">
+  <ion-content class="padding" ng-controller="DashCtrl">
+
+      <div class="list">
+        <label class="item item-input item-floating-label">
+         <span class="input-label">Where should it be picked up from?</span>
+          <input type="text" id="origin-input" placeholder="Where should it be picked up from?" ng-focus="disableTap()">
+        </label>
+        <label class="item item-input item-floating-label">
+          <span class="input-label">Where should it be delivered to?</span>
+          <input type="text" id="destination-input" placeholder="Where should it be delivered to?" ng-focus="disableTap()">
+        </label>
+      </div>
+      
+      <!--
+      <div class="list list-inset">
+          <label class="item item-input">
+            <input id="origin-input" type="text" placeholder="Where should it be picked up from?">
+          </label>
+          <label class="item item-input">
+            <input id="destination-input" type="text" placeholder="Where should it be delivered to?">
+          </label>
+        </div>
+-->
+      <!--
+      <div class="list list-inset">
+          <label class="item item-input">
+            <i class="icon ion-search placeholder-icon"></i>
+            <input id="origin-input" type="text" placeholder="Search address 2" ng-focus="disableTap()" />
+          </label>
+        </div>
+       <div class="list list-inset">
+            <ion-google-place placeholder="Your address" ng-model="data.address" required name="address" location-changed="locationChanged"/>
+       </div>
+      -->
+      
+        <div id="mode-selector" class="controls">
+            <input type="radio" name="type" id="changemode-walking" checked="checked">
+            <label for="changemode-walking">Walking</label>
+
+            <input type="radio" name="type" id="changemode-transit">
+            <label for="changemode-transit">Transit</label>
+
+            <input type="radio" name="type" id="changemode-driving">
+            <label for="changemode-driving">Driving</label>
+        </div>
+      <div id="map"></div>
+
+      <div>
+        <a class="button button-block button-positive icon-right ion-chevron-right button-calm" href="#/tab/send-item">Continue</a>
+        <br>
+      </div>
+    
+  </ion-content>
 </ion-view>
