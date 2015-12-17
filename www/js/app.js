@@ -20,6 +20,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       // org.apache.cordova.statusbar required
       StatusBar.styleLightContent();
     }
+    
+    // Parse initialization
+    Parse.initialize("QulU4nLdAg84OoM0Yvd8LfE8dwNNqD2o4UW4mo1f", "yl8ZDO4kpwmtQYrvS95zjWVwkSwnlyC5cznauYxT");
+    
   });
 })
 
@@ -79,7 +83,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     views: {
       'tab-dash': {
         templateUrl: 'templates/page-receive-couriers.html',
-        controller: 'PageRecvCourierCtrl'
+        //controller: 'PageRecvCourierCtrl'
+        controller: 'ReqLoadingIntervalCtrl'
       }
     }
   })

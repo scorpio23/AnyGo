@@ -192,6 +192,241 @@ angular.module('starter.controllers', [])
     }, 4000);
 
 })
+
+// Loding page with interceptors
+.controller('LoadingCtrl', function($scope, $http, $ionicLoading, Chats) {
+  console.log("## Inside LoadingCtrl controler");
+  var _this = this
+  
+  /***
+  $ionicLoading.show({
+    template: 'loading'
+  })
+  ***/
+  
+  $ionicLoading.show({
+        content: 'Loading',
+        animation: 'fade-in',
+        showBackdrop: true,
+        maxWidth: 200,
+        showDelay: 0
+  })
+    
+  $http.jsonp('https://angularjs.org/greet.php?callback=JSON_CALLBACK&name=Super%20Hero').then(function(result) {
+    $ionicLoading.hide()
+    $scope.items = result;
+    console.log("## Inside LoadingCtrl controler : " + $scope.items);
+    
+    $scope.couriers = [{name: 'Courier 1'}, {name: 'Courier 2'}, {name: 'Courier 3'}, {name: 'Courier 4'}];
+        
+        // load service list of couriers
+        $scope.chats = Chats.all();
+        $scope.remove = function(chat) {
+            Chats.remove(chat);
+        };
+  })
+})
+
+// Request loading page with interceptors
+.controller('ReqLoadingCtrl', function($scope, $http, $ionicLoading, Chats) {
+  console.log("## Inside Request LoadingCtrl controler");
+  
+  $ionicLoading.show({
+        content: 'Loading',
+        animation: 'fade-in',
+        showBackdrop: true,
+        maxWidth: 200,
+        showDelay: 0
+  })
+    
+    console.log("## Outside getSendItemResponse ... ");
+    $scope.getSendItemResponse = function(params) {
+      console.log("## Inside getSendItemResponse ... ");
+      var sendItemRequest = Parse.Object.extend("SendItemRequest");
+      var query = new Parse.Query(sendItemRequest);
+      
+      if(params !== undefined) {
+          console.log("## inside  getSendItemResponse params ... " + params);
+          if(params.confirmStatus !== undefined) {
+              console.log("## inside  getSendItemResponse params ... " + params.confirmStatus);
+              query.equalTo("confirmStatus", params.confirmStatus);
+          }
+      }
+      query.find({
+          success: function(results) {
+              alert("Successfully retrieved " + results.length + " confirmStatus!");
+              for (var i = 0; i < results.length; i++) {
+                  var object = results[i];
+                  console.log("confirmStatus : " + object.id + ' - ' + object.get("confirmStatus"));
+              }
+              $ionicLoading.hide()
+              $scope.couriers = [{name: 'Courier 1'}, {name: 'Courier 2'}, {name: 'Courier 3'}, {name: 'Courier 4'}];
+                  
+                  // load service list of couriers
+                  $scope.chats = Chats.all();
+                  $scope.remove = function(chat) {
+                      Chats.remove(chat);
+                  };
+        
+          },
+          error: function(error) {
+              $ionicLoading.hide()
+              alert("Error: " + error.code + " " + error.message);
+          }
+      });
+    }
+    
+    $scope.getSendItemResponse({confirmStatus: 'Y'});
+})
+
+
+.controller('ReqLoadingIntervalCtrl', ['$scope', '$interval', '$ionicLoading', 'Chats',
+      function($scope, $interval, $ionicLoading, Chats) {
+        $scope.format = 'M/d/yy h:mm:ss a';
+        $scope.blood_1 = 100;
+        $scope.blood_2 = 120;
+        
+        $scope.confirmStatusFlag = 0;
+        
+        console.log("## Inside Request ReqLoadingIntervalCtrl controler with interval");
+        
+        $ionicLoading.show({
+              content: 'Loading',
+              animation: 'fade-in',
+              showBackdrop: true,
+              maxWidth: 200,
+              showDelay: 0
+        })
+
+        $scope.getSendItemResponse = function(params) {
+          console.log("## Inside ReqLoadingIntervalCtrl -  ... $scope.getSendItemResponse.. ");
+          var sendItemRequest = Parse.Object.extend("SendItemRequest");
+          var query = new Parse.Query(sendItemRequest);
+          
+          if(params !== undefined) {
+              console.log("## inside  ReqLoadingIntervalCtrl params ... $scope.getSendItemResponse " + params);
+              if(params.confirmStatus !== undefined) {
+                  console.log("## inside  ReqLoadingIntervalCtrl params ... $scope.getSendItemResponse filter " + params.confirmStatus);
+                  query.equalTo("confirmStatus", params.confirmStatus);
+              }
+          }
+          query.find({
+              success: function(results) {
+                  console.log("Successfully retrieved " + results.length + " confirmStatus!");
+                  for (var i = 0; i < results.length; i++) {
+                      var object = results[i];
+                      console.log("confirmStatus : " + object.id + ' - ' + object.get("confirmStatus"));
+                  }
+                  
+                  // condition if someone confirm the request
+                  if (results.length > 0) {
+                    console.log("## Inside ReqLoadingIntervalCtrl -  ... responseConfirm.. " + results.length);
+                    
+                    //return true;
+                    $scope.confirmStatusFlag = results.length;
+                    
+                  } 
+
+                  // service call stop or repeat depend on success confirm status
+                  $scope.fight();
+                  
+                  // Load Static data
+                  // Display only when finish loading and got response
+                  if (results.length > 0) {
+                    $scope.couriers = [{name: 'Courier 1'}, {name: 'Courier 2'}, {name: 'Courier 3'}, {name: 'Courier 4'}];
+                      
+                    // load service list of couriers
+                    $scope.chats = Chats.all();
+                    $scope.remove = function(chat) {
+                        Chats.remove(chat);
+                    };
+                  }
+                  
+                  
+              },
+              error: function(error) {
+                  $ionicLoading.hide()
+                  alert("Error: " + error.code + " " + error.message);
+              }
+          });
+        }
+    
+        var stop;
+        
+        // Call response parse service
+        $scope.getSendItemResponse({confirmStatus: 'Y'});
+        
+        $scope.fight = function() {
+          
+          // Don't start a new fight if we are already fighting
+          if ( angular.isDefined(stop) ) return;
+          
+          stop = $interval(function() {
+            //if ($scope.blood_1 > 0 && $scope.blood_2 > 0) {
+              //$scope.blood_1 = $scope.blood_1 - 3;
+              //$scope.blood_2 = $scope.blood_2 - 4;
+            if ($scope.confirmStatusFlag > 0) {
+              console.log("## Inside ReqLoadingIntervalCtrl -  ... $scope.fight.. stop calling " + $scope.confirmStatusFlag);
+              $scope.stopFight();
+            } else {
+              console.log("## Inside ReqLoadingIntervalCtrl -  ... $scope.fight.. repeat calling " + $scope.confirmStatusFlag);
+              // wair for someone confirm until timeout
+              $scope.getSendItemResponse({confirmStatus: 'Y'});
+            }
+          }, 2000);
+        };
+
+        $scope.stopFight = function() {
+          if (angular.isDefined(stop)) {
+            console.log("## Inside ReqLoadingIntervalCtrl -  ... $scope.stopFight.. " + stop);
+            $interval.cancel(stop);
+            stop = undefined;
+            // finish loading and return response result
+            $ionicLoading.hide();
+          }
+        };
+
+        $scope.resetFight = function() {
+          $scope.blood_1 = 100;
+          $scope.blood_2 = 120;
+        };
+
+        $scope.$on('$destroy', function() {
+          // Make sure that the interval is destroyed too
+          $scope.stopFight();
+        });
+      }]
+)
+      
+// Register the 'myCurrentTime' directive factory method.
+// We inject $interval and dateFilter service since the factory method is DI.
+.directive('myCurrentTime', ['$interval', 'dateFilter',
+  function($interval, dateFilter) {
+    // return the directive link function. (compile function not needed)
+    return function(scope, element, attrs) {
+      var format,  // date format
+          stopTime; // so that we can cancel the time updates
+
+      // used to update the UI
+      function updateTime() {
+        element.text(dateFilter(new Date(), format));
+      }
+
+      // watch the expression, and update the UI on change.
+      scope.$watch(attrs.myCurrentTime, function(value) {
+        format = value;
+        updateTime();
+      });
+
+      stopTime = $interval(updateTime, 1000);
+
+      // listen on DOM destroy (removal) event, and cancel the next UI update
+      // to prevent updating time after the DOM element was removed.
+      element.on('$destroy', function() {
+        $interval.cancel(stopTime);
+      });
+    }
+  }])
     
 
 .controller('AccountCtrl', function($scope) {
