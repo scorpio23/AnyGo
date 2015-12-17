@@ -427,7 +427,19 @@ angular.module('starter.controllers', [])
       });
     }
   }])
+
+// Courier request controler
+.controller('CourierReqCtrl', function($scope) {
+    console.log("## Inside CourierReqCtrl for courier controler");
     
+    $scope.saveCourierReq = function(userid, confirmStatus) {
+        var SendItemRequest = Parse.Object.extend("SendItemRequest");
+        var sendItemObject = new SendItemRequest();
+        sendItemObject.set("userid", userid);
+        sendItemObject.set("confirmStatus", confirmStatus);
+        sendItemObject.save(null, {});
+    };
+})
 
 .controller('AccountCtrl', function($scope) {
   $scope.settings = {
