@@ -172,32 +172,6 @@ angular.module('starter.controllers', [])
 
 // Loading page
 .controller('PageRecvCourierCtrl', function($scope, $timeout, $ionicLoading, Chats) {
-    console.log("## Inside page receive courier controler");
-    
-    // Get Parse class object driver request 
-    function getCourierResponse (params) {
-        var SendItemRequest = Parse.Object.extend("SendItemRequest");
-        var query = new Parse.Query(SendItemRequest);
-        if(params !== undefined) {
-            if(params.confirmStatus !== undefined) {
-                query.equalTo("confirmStatus", params.confirmStatus);
-            }
-        }
-        console.log("## After Inside page receive courier controler");
-        query.find({
-            success: function(results) {
-                alert("Successfully retrieved " + results.length + " confirm status!");
-                for (var i = 0; i < results.length; i++) {
-                    var object = results[i];
-                    console.log(object.id + ' - ' + object.get("userid") + " - confirm status : " + object.get("confirmStatus"));
-                }
-            },
-            error: function(error) {
-                alert("Error: " + error.code + " " + error.message);
-            }
-        })
-    }
-    
     $ionicLoading.show({
         content: 'Loading',
         animation: 'fade-in',
@@ -205,7 +179,6 @@ angular.module('starter.controllers', [])
         maxWidth: 200,
         showDelay: 0
     })
-    
     // Set a timeout to clear loader, however you would actually call the $ionicLoading.hide(); method whenever everything is ready or loaded.
     $timeout(function () {
         $ionicLoading.hide();
@@ -216,16 +189,10 @@ angular.module('starter.controllers', [])
         $scope.remove = function(chat) {
             Chats.remove(chat);
           };
-        
-        // Parse waiting for courier to response
-        $scope.getCourierResponse = getCourierResponse({confirmStatus: 'Y'});
-        console.log("## Inside page receive courier controler - " + $scope.getCourierResponse);
-        
     }, 4000);
 
 })
 
-<<<<<<< HEAD
 // Loding page with interceptors
 .controller('LoadingCtrl', function($scope, $http, $ionicLoading, Chats) {
   console.log("## Inside LoadingCtrl controler");
@@ -460,48 +427,6 @@ angular.module('starter.controllers', [])
       });
     }
   }])
-=======
-// Firebase Login controler
-.controller("loginCtrl", function($scope, $rootScope, $firebase, $firebaseSimpleLogin) {
-  // Get a reference to the Firebase
-  // TODO: Replace "ionic-demo" below with the name of your own Firebase
-  //var firebaseRef = new Firebase("https://ionic-demo.firebaseio.com/");
-  var firebaseRef = new Firebase("https://sweltering-heat-9867.firebaseio.com/");
-    
-  // Create a Firebase Simple Login object
-  $scope.auth = $firebaseSimpleLogin(firebaseRef);
-
-  // Initially set no user to be logged in
-  $scope.user = null;
-
-  // Logs a user in with inputted provider
-  $scope.login = function(provider) {
-    $scope.auth.$login(provider);
-  };
-
-  // Logs a user out
-  $scope.logout = function() {
-    $scope.auth.$logout();
-  };
-
-  // Upon successful login, set the user object
-  $rootScope.$on("$firebaseSimpleLogin:login", function(event, user) {
-    $scope.user = user;
-  });
-
-  // Upon successful logout, reset the user object
-  $rootScope.$on("$firebaseSimpleLogin:logout", function(event) {
-    $scope.user = null;
-  });
-
-  // Log any login-related errors to the console
-  $rootScope.$on("$firebaseSimpleLogin:error", function(event, error) {
-    console.log("Error logging user in: ", error);
-  });
-})
-
-
->>>>>>> aa224c6bd47ce778cf55552aae19ed2fe5e53f55
     
 
 .controller('AccountCtrl', function($scope) {
