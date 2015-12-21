@@ -1,5 +1,64 @@
 angular.module('starter.controllers', [])
 
+
+.controller('LoginCtrl', function($scope, $state, $ionicLoading, $timeout) {
+  
+  $scope.data = {};
+  // Signup email function to update Parse
+  $scope.signupEmail = function() {
+    //Create a new user on Parse
+    var user = new Parse.User();
+    user.set("username", $scope.data.username);
+    user.set("password", $scope.data.password);
+    user.set("email", $scope.data.email);
+    user.set("isDriver", $scope.data.isdriver);
+   
+    // other fields can be set just like with Parse.Object
+    user.set("somethingelse", "like this!");
+    
+    user.signUp(null, {
+      success: function(user) {
+        // Hooray! Let them use the app now.
+        alert("success signup.. !");
+      },
+      error: function(user, error) {
+        // Show the error message somewhere and let the user try again.
+        alert("Error: " + error.code + " " + error.message);
+      }
+    });
+  };
+ 
+  $scope.loginEmail = function() {
+    Parse.User.logIn($scope.data.username, $scope.data.password, {
+      success: function(user) {
+        // Do stuff after successful login.
+        console.log(user);
+        alert("success login.. !");
+        
+        // store user session in localStorage
+        localStorage.setItem("username", $scope.data.username);
+        
+        $ionicLoading.show({
+              content: 'Loading',
+              animation: 'fade-in',
+              showBackdrop: true,
+              maxWidth: 200,
+              showDelay: 0
+        })
+        // Set a timeout to clear loader, however you would actually call the $ionicLoading.hide(); method whenever everything is ready or loaded.
+        $timeout(function () {
+            $state.go('tab.dash');
+            $ionicLoading.hide();
+        }, 2000);
+      },
+      error: function(user, error) {
+        // The login failed. Check error to see why.
+        alert("error!");
+      }
+    });
+  };
+})
+
 .controller('DashCtrl', function($scope, $ionicLoading) {
  
     console.log("##In Google.maps.event.addDomListener");
@@ -128,16 +187,16 @@ angular.module('starter.controllers', [])
     
     
     // adding
-    $scope.disableTap = function(){
-    container = document.getElementsByClassName('pac-container');
-    // disable ionic data tab
-    angular.element(container).attr('data-tap-disabled', 'true');
-    // leave input field if google-address-entry is selected
-    angular.element(container).on("click", function(){
-        document.getElementById('origin-input').blur();
-        document.getElementById('destination-input').blur();
-    });
-  };
+    $scope.disableTap = function() {
+      container = document.getElementsByClassName('pac-container');
+      // disable ionic data tab
+      angular.element(container).attr('data-tap-disabled', 'true');
+      // leave input field if google-address-entry is selected
+      angular.element(container).on("click", function(){
+          document.getElementById('origin-input').blur();
+          document.getElementById('destination-input').blur();
+      });
+    };
     
 })
 
@@ -430,12 +489,12 @@ angular.module('starter.controllers', [])
 
 // Courier request controler
 .controller('CourierReqCtrl', function($scope) {
-    console.log("## Inside CourierReqCtrl for courier controler");
+    console.log("## Inside CourierReqCtrl for courier controler for username : " + localStorage.getItem("username"));
     
     $scope.saveCourierReq = function(userid, confirmStatus) {
         var SendItemRequest = Parse.Object.extend("SendItemRequest");
         var sendItemObject = new SendItemRequest();
-        sendItemObject.set("userid", userid);
+        sendItemObject.set("userid", localStorage.getItem("username"));
         sendItemObject.set("confirmStatus", confirmStatus);
         sendItemObject.save(null, {});
     };
