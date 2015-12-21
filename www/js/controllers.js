@@ -356,8 +356,18 @@ angular.module('starter.controllers', [])
               maxWidth: 200,
               showDelay: 0
         })
+        
+        // Insert send item request from customer
+        var SendItemRequest = Parse.Object.extend("SendItemRequest");
+        var sendItemObject = new SendItemRequest();
+        sendItemObject.set("userid", localStorage.getItem("username"));
+        sendItemObject.set("confirmStatus", "N");
+        sendItemObject.set("reqExpired", false);
+        sendItemObject.set("sendRequest", true);
+        sendItemObject.save(null, {});
+        console.log("## Inside Request ReqLoadingIntervalCtrl - success insert request for " + localStorage.getItem("username"));
 
-        $scope.getSendItemResponse = function(params) {
+        $scope.getSendItemResponse = function(username, params) {
           console.log("## Inside ReqLoadingIntervalCtrl -  ... $scope.getSendItemResponse.. ");
           var sendItemRequest = Parse.Object.extend("SendItemRequest");
           var query = new Parse.Query(sendItemRequest);
@@ -413,7 +423,7 @@ angular.module('starter.controllers', [])
         var stop;
         
         // Call response parse service
-        $scope.getSendItemResponse({confirmStatus: 'Y'});
+        $scope.getSendItemResponse(localStorage.getItem("username"), {confirmStatus: 'Y'});
         
         $scope.fight = function() {
           
@@ -430,7 +440,7 @@ angular.module('starter.controllers', [])
             } else {
               console.log("## Inside ReqLoadingIntervalCtrl -  ... $scope.fight.. repeat calling " + $scope.confirmStatusFlag);
               // wair for someone confirm until timeout
-              $scope.getSendItemResponse({confirmStatus: 'Y'});
+              $scope.getSendItemResponse(localStorage.getItem("username"), {confirmStatus: 'Y'});
             }
           }, 2000);
         };
