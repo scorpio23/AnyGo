@@ -142,7 +142,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     views: {
       'tab-courier': {
         templateUrl: 'templates/tab-courier.html',
-        controller: 'CourierReqCtrl'
+        controller: 'CourierCtrl'
+      }
+    }
+  })
+  
+  .state('tab.page-courier-checking', {
+    url: '/page-courier-checking',
+    views: {
+      'tab-courier': {
+        templateUrl: 'templates/page-courier-checking.html',
+        controller: 'SendItemReqCtrl'
       }
     }
   })
@@ -158,7 +168,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   });
 
   // if none of the above states are matched, use this as the fallback
-  //$urlRouterProvider.otherwise('/tab/dash');
-  $urlRouterProvider.otherwise("/");
+  $urlRouterProvider.otherwise('/tab/dash');
+  //$urlRouterProvider.otherwise("/");
 
 });

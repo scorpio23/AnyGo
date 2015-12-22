@@ -33,7 +33,7 @@ angular.module('starter.controllers', [])
       success: function(user) {
         // Do stuff after successful login.
         console.log(user);
-        alert("success login.. !");
+        //alert("success login.. !");
         
         // store user session in localStorage
         localStorage.setItem("username", $scope.data.username);
@@ -229,6 +229,10 @@ angular.module('starter.controllers', [])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
+.controller('CourierCtrl', function($scope, $stateParams) {
+  console.log("## Inside Courier controler");
+})
+
 // Loading page
 .controller('PageRecvCourierCtrl', function($scope, $timeout, $ionicLoading, Chats) {
     $ionicLoading.show({
@@ -286,56 +290,58 @@ angular.module('starter.controllers', [])
   })
 })
 
-// Request loading page with interceptors
-.controller('ReqLoadingCtrl', function($scope, $http, $ionicLoading, Chats) {
-  console.log("## Inside Request LoadingCtrl controler");
+// Get List request to send item to courier page
+.controller('SendItemReqCtrl', function($scope, $http, $ionicLoading) {
+  console.log("## Inside Request SendItemReqCtrl controler");
   
-  $ionicLoading.show({
+  $scope.sendReqList = [];
+  
+  //$scope.getSendItemReqList = function(params) {
+  
+  params = {confirmStatus: 'N'};
+  
+      var sendItemRequest = Parse.Object.extend("SendItemRequest");
+      var query = new Parse.Query(sendItemRequest);
+      
+      $ionicLoading.show({
         content: 'Loading',
         animation: 'fade-in',
         showBackdrop: true,
         maxWidth: 200,
         showDelay: 0
-  })
-    
-    console.log("## Outside getSendItemResponse ... ");
-    $scope.getSendItemResponse = function(params) {
-      console.log("## Inside getSendItemResponse ... ");
-      var sendItemRequest = Parse.Object.extend("SendItemRequest");
-      var query = new Parse.Query(sendItemRequest);
+      })
       
       if(params !== undefined) {
-          console.log("## inside  getSendItemResponse params ... " + params);
+          console.log("## inside  getSendItemReqList params ... " + params);
           if(params.confirmStatus !== undefined) {
-              console.log("## inside  getSendItemResponse params ... " + params.confirmStatus);
+              console.log("## inside  getSendItemReqList params ... " + params.confirmStatus);
               query.equalTo("confirmStatus", params.confirmStatus);
+              query.equalTo("reqExpired", false);
+              query.equalTo("sendRequest", true);
           }
       }
       query.find({
           success: function(results) {
-              alert("Successfully retrieved " + results.length + " confirmStatus!");
+              //alert("Successfully retrieved " + results.length + " requests!");
               for (var i = 0; i < results.length; i++) {
                   var object = results[i];
-                  console.log("confirmStatus : " + object.id + ' - ' + object.get("confirmStatus"));
-              }
-              $ionicLoading.hide()
-              $scope.couriers = [{name: 'Courier 1'}, {name: 'Courier 2'}, {name: 'Courier 3'}, {name: 'Courier 4'}];
+                  $scope.sendReqList.push({objectId: object.id, userid: object.get("userid")});
                   
-                  // load service list of couriers
-                  $scope.chats = Chats.all();
-                  $scope.remove = function(chat) {
-                      Chats.remove(chat);
-                  };
-        
+                  console.log("getting request from username : " + object.id + ' - ' + object.get("userid"));
+              }
+              $ionicLoading.hide();
           },
           error: function(error) {
               $ionicLoading.hide()
               alert("Error: " + error.code + " " + error.message);
           }
       });
-    }
-    
-    $scope.getSendItemResponse({confirmStatus: 'Y'});
+      
+    //}
+
+    // to load send item request
+   //$scope.getSendItemReqList({confirmStatus: 'N'});
+
 })
 
 
@@ -497,7 +503,7 @@ angular.module('starter.controllers', [])
     }
   }])
 
-// Courier request controler
+// Courier request controler -- ##### UNUSED
 .controller('CourierReqCtrl', function($scope) {
     console.log("## Inside CourierReqCtrl for courier controler for username : " + localStorage.getItem("username"));
     
