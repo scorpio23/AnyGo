@@ -19,6 +19,18 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
+.login {
+    background: url(../img/logo-america_s-11-best-looking-cities-new-york-city.jpg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: stretch;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    z-index: 2;
+    position: relative;
+}
+
 #origin-input,
 #destination-input {
   background-color: #fff;

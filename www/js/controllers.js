@@ -39,8 +39,9 @@ angular.module('starter.controllers', [])
         localStorage.setItem("username", $scope.data.username);
         
         $ionicLoading.show({
-              content: 'Loading',
-              animation: 'fade-in',
+              template: '<ion-spinner icon="android"></ion-spinner>',
+              //content: 'Loading',
+              //animation: 'fade-in',
               showBackdrop: true,
               maxWidth: 200,
               showDelay: 0
@@ -236,8 +237,9 @@ angular.module('starter.controllers', [])
 // Loading page
 .controller('PageRecvCourierCtrl', function($scope, $timeout, $ionicLoading, Chats) {
     $ionicLoading.show({
-        content: 'Loading',
-        animation: 'fade-in',
+        template: '<ion-spinner icon="android"></ion-spinner>',
+        //content: 'Loading',
+        //animation: 'fade-in',
         showBackdrop: true,
         maxWidth: 200,
         showDelay: 0
@@ -268,8 +270,9 @@ angular.module('starter.controllers', [])
   ***/
   
   $ionicLoading.show({
-        content: 'Loading',
-        animation: 'fade-in',
+        template: '<ion-spinner icon="android"></ion-spinner>',
+        //content: 'Loading',
+        //animation: 'fade-in',
         showBackdrop: true,
         maxWidth: 200,
         showDelay: 0
@@ -304,8 +307,9 @@ angular.module('starter.controllers', [])
       var query = new Parse.Query(sendItemRequest);
       
       $ionicLoading.show({
-        content: 'Loading',
-        animation: 'fade-in',
+        template: '<ion-spinner icon="android"></ion-spinner>',
+        //content: 'Loading',
+        //animation: 'fade-in',
         showBackdrop: true,
         maxWidth: 200,
         showDelay: 0
@@ -356,8 +360,9 @@ angular.module('starter.controllers', [])
         console.log("## Inside Request ReqLoadingIntervalCtrl controler with interval");
         
         $ionicLoading.show({
-              content: 'Loading',
-              animation: 'fade-in',
+              template: '<ion-spinner icon="android"></ion-spinner>',
+              //content: 'Loading',
+              //animation: 'fade-in',
               showBackdrop: true,
               maxWidth: 200,
               showDelay: 0
