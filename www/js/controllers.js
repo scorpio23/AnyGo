@@ -294,18 +294,18 @@ angular.module('starter.controllers', [])
 })
 
 // Get List request to send item to courier page
-.controller('SendItemReqCtrl', function($scope, $http, $ionicLoading) {
-  console.log("## Inside Request SendItemReqCtrl controler");
-  
-  $scope.sendReqList = [];
-  
-  //$scope.getSendItemReqList = function(params) {
-  
-  params = {confirmStatus: 'N'};
-  
+.controller('SendItemReqCtrl', function($scope, $http, $ionicLoading, $state) {
+      console.log("## Inside Request SendItemReqCtrl controler");
+
+      $scope.sendReqList = [];
+
+      //$scope.getSendItemReqList = function(params) {
+
+      params = {confirmStatus: 'N'};
+
       var sendItemRequest = Parse.Object.extend("SendItemRequest");
       var query = new Parse.Query(sendItemRequest);
-      
+
       $ionicLoading.show({
         template: '<ion-spinner icon="android"></ion-spinner>',
         //content: 'Loading',
@@ -314,7 +314,7 @@ angular.module('starter.controllers', [])
         maxWidth: 200,
         showDelay: 0
       })
-      
+
       if(params !== undefined) {
           console.log("## inside  getSendItemReqList params ... " + params);
           if(params.confirmStatus !== undefined) {
@@ -330,7 +330,7 @@ angular.module('starter.controllers', [])
               for (var i = 0; i < results.length; i++) {
                   var object = results[i];
                   $scope.sendReqList.push({objectId: object.id, userid: object.get("userid")});
-                  
+
                   console.log("getting request from username : " + object.id + ' - ' + object.get("userid"));
               }
               $ionicLoading.hide();
@@ -345,7 +345,28 @@ angular.module('starter.controllers', [])
 
     // to load send item request
    //$scope.getSendItemReqList({confirmStatus: 'N'});
-
+    
+    // process selected customer by courier
+    $scope.confirmSendOrder = function(userid) {
+        var SendItemRequest = Parse.Object.extend("SendItemRequest");
+        var query = new Parse.Query(SendItemRequest);
+        query.equalTo("userid", userid);
+        
+        query.first({
+          success: function(object) {
+            object.set("driverid", localStorage.getItem("username"));
+            object.set("sendRequest", false);
+            object.set("confirmStatus", "Y");
+            object.save();
+            alert ("Request Job Successfully..");
+              
+            $state.go('tab.courier');
+          },
+          error: function(error) {
+            alert("Error: " + error.code + " " + error.message);
+          }
+        });
+    }
 })
 
 
@@ -375,6 +396,7 @@ angular.module('starter.controllers', [])
         sendItemObject.set("confirmStatus", "N");
         sendItemObject.set("reqExpired", false);
         sendItemObject.set("sendRequest", true);
+        sendItemObject.set("deleteFlag", false);
         sendItemObject.save(null, {});
         console.log("## Inside Request ReqLoadingIntervalCtrl - success insert request for " + localStorage.getItem("username"));
 
@@ -388,6 +410,9 @@ angular.module('starter.controllers', [])
               if(params.confirmStatus !== undefined) {
                   console.log("## inside  ReqLoadingIntervalCtrl params ... $scope.getSendItemResponse filter " + params.confirmStatus);
                   query.equalTo("confirmStatus", params.confirmStatus);
+                  query.equalTo("userid", localStorage.getItem("username"));
+                  query.equalTo("sendRequest", false);
+                  query.equalTo("deleteFlag", false);
               }
           }
           query.find({

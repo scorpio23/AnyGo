@@ -1,7 +1,7 @@
 <!-- Login page with existing user login -->
 <ion-view title="Sign In">
     <ion-content padding="true" class="has-header">
-        <form>
+        <form class="login">
             <ion-list>
                 <label class="item item-input">
                     <span class="input-label">Username</span>
@@ -12,7 +12,7 @@
                     <input type="password" placeholder="enter your password..." ng-model="data.password">
                 </label>
             </ion-list>
-            <button class="button button-stable button-block" ng-click="loginEmail()">Done</button>
+            <button class="button button-positive" style="width: 100%; margin: 10px 0; top: 40%" ng-click="loginEmail()">Done</button>
         </form>
     </ion-content>
 </ion-view>
