@@ -2,7 +2,7 @@
   <ion-content>
      <ion-list>
       <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="sendReq in sendReqList" 
-                type="item-text-wrap" ng-click="confirmSendOrder('holid')">
+                type="item-text-wrap" ng-click="confirmSendOrder(sendReq.userid)">
         <img ng-src="https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png">
         <h2>Request from : {{sendReq.userid}}</h2>
         <p>{{sendReq.objectId}}</p>
@@ -14,4 +14,4 @@
       </ion-item>
     </ion-list>
   </ion-content>
-</ion-view>
+</ion-view> 

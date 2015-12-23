@@ -316,12 +316,13 @@ angular.module('starter.controllers', [])
       })
 
       if(params !== undefined) {
-          console.log("## inside  getSendItemReqList params ... " + params);
+          console.log("## inside  SendItemReqCtrl params ... " + params);
           if(params.confirmStatus !== undefined) {
-              console.log("## inside  getSendItemReqList params ... " + params.confirmStatus);
+              console.log("## inside  SendItemReqCtrl params ... " + params.confirmStatus);
               query.equalTo("confirmStatus", params.confirmStatus);
               query.equalTo("reqExpired", false);
               query.equalTo("sendRequest", true);
+              query.equalTo("deleteFlag", false);
           }
       }
       query.find({
@@ -348,6 +349,7 @@ angular.module('starter.controllers', [])
     
     // process selected customer by courier
     $scope.confirmSendOrder = function(userid) {
+        console.log("## inside  SendItemReqCtrl method confirmSendOrder to confirm user : " + userid);
         var SendItemRequest = Parse.Object.extend("SendItemRequest");
         var query = new Parse.Query(SendItemRequest);
         query.equalTo("userid", userid);
@@ -357,6 +359,7 @@ angular.module('starter.controllers', [])
             object.set("driverid", localStorage.getItem("username"));
             object.set("sendRequest", false);
             object.set("confirmStatus", "Y");
+            object.set("deleteFlag", true);
             object.save();
             alert ("Request Job Successfully..");
               
@@ -369,7 +372,7 @@ angular.module('starter.controllers', [])
     }
 })
 
-
+// Customer to request to send item to courier
 .controller('ReqLoadingIntervalCtrl', ['$scope', '$interval', '$ionicLoading', 'Chats',
       function($scope, $interval, $ionicLoading, Chats) {
         $scope.format = 'M/d/yy h:mm:ss a';
@@ -388,6 +391,32 @@ angular.module('starter.controllers', [])
               maxWidth: 200,
               showDelay: 0
         })
+        
+        // process selected customer by courier
+        $scope.updateUserOrder = function(userid) {
+            console.log("## Searching user and delete if exist : " + userid);
+            var SendItemRequest = Parse.Object.extend("SendItemRequest");
+            var query = new Parse.Query(SendItemRequest);
+            query.equalTo("userid", userid);
+            query.equalTo("sendRequest", true);
+            query.equalTo("confirmStatus", "N");
+            query.equalTo("deleteFlag", false);
+            
+            query.first({
+              success: function(object) {
+                //object.set("driverid", localStorage.getItem("username"));
+                object.set("deleteFlag", true);
+                object.save();
+                console.log("## User existing, mark this request deleted : " + userid);
+              },
+              error: function(error) {
+                alert("Error: " + error.code + " " + error.message);
+              }
+            });
+        }
+        
+        // Update user request if exist
+        $scope.updateUserOrder(localStorage.getItem("username"));
         
         // Insert send item request from customer
         var SendItemRequest = Parse.Object.extend("SendItemRequest");
