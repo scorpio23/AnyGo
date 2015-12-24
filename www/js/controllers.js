@@ -1,7 +1,8 @@
 angular.module('starter.controllers', [])
 
-
-.controller('LoginCtrl', function($scope, $state, $ionicLoading, $timeout) {
+// This is User Management controler
+// Login and Signup member
+.controller('LoginCtrl', function($scope, $state, $ionicLoading, $timeout, $ionicPopup) {
   
   $scope.data = {};
   // Signup email function to update Parse
@@ -12,40 +13,51 @@ angular.module('starter.controllers', [])
     user.set("password", $scope.data.password);
     user.set("email", $scope.data.email);
     user.set("isDriver", $scope.data.isdriver);
-   
-    // other fields can be set just like with Parse.Object
-    user.set("somethingelse", "like this!");
     
     user.signUp(null, {
       success: function(user) {
         // Hooray! Let them use the app now.
-        alert("success signup.. !");
+        $ionicPopup.alert({
+          title: 'Success Signup',
+          content: 'Welcome to AnyGo.'
+        }).then(function(res) {
+          console.log('User has successfully signup : ' + user);
+        });
       },
       error: function(user, error) {
         // Show the error message somewhere and let the user try again.
-        alert("Error: " + error.code + " " + error.message);
+        //alert("Error: " + error.code + " " + error.message);
+        $ionicPopup.alert({
+          title: 'Unsuccessful Signup',
+          content: 'Please completed the form to signup.'
+        }).then(function(res) {
+          console.log('User failed to signup : ' + user);
+        });
       }
     });
   };
  
+  // Login function
   $scope.loginEmail = function() {
+    
+    $ionicLoading.show({
+      template: '<ion-spinner icon="android"></ion-spinner>',
+      //content: 'Loading',
+      //animation: 'fade-in',
+      showBackdrop: true,
+      maxWidth: 200,
+      showDelay: 0
+    })
+      
     Parse.User.logIn($scope.data.username, $scope.data.password, {
       success: function(user) {
         // Do stuff after successful login.
-        console.log(user);
+        console.log("User successfully login : " + user);
         //alert("success login.. !");
         
         // store user session in localStorage
         localStorage.setItem("username", $scope.data.username);
         
-        $ionicLoading.show({
-              template: '<ion-spinner icon="android"></ion-spinner>',
-              //content: 'Loading',
-              //animation: 'fade-in',
-              showBackdrop: true,
-              maxWidth: 200,
-              showDelay: 0
-        })
         // Set a timeout to clear loader, however you would actually call the $ionicLoading.hide(); method whenever everything is ready or loaded.
         $timeout(function () {
             $state.go('tab.dash');
@@ -53,8 +65,15 @@ angular.module('starter.controllers', [])
         }, 2000);
       },
       error: function(user, error) {
+        $ionicLoading.hide();
         // The login failed. Check error to see why.
-        alert("error!");
+        //alert("Login Unsuccessful, please try again");
+        $ionicPopup.alert({
+          title: 'Unsuccessful Login',
+          content: 'Wrong password or login id.'
+        }).then(function(res) {
+          console.log('User has failed login : ' + user);
+        });
       }
     });
   };
@@ -293,7 +312,7 @@ angular.module('starter.controllers', [])
   })
 })
 
-// Get List request to send item to courier page
+// Get customer List request to send item for courier page
 .controller('SendItemReqCtrl', function($scope, $http, $ionicLoading, $state) {
       console.log("## Inside Request SendItemReqCtrl controler");
 
@@ -301,7 +320,7 @@ angular.module('starter.controllers', [])
 
       //$scope.getSendItemReqList = function(params) {
 
-      params = {confirmStatus: 'N'};
+      params = {sendResponse: false};
 
       var sendItemRequest = Parse.Object.extend("SendItemRequest");
       var query = new Parse.Query(sendItemRequest);
@@ -317,17 +336,16 @@ angular.module('starter.controllers', [])
 
       if(params !== undefined) {
           console.log("## inside  SendItemReqCtrl params ... " + params);
-          if(params.confirmStatus !== undefined) {
-              console.log("## inside  SendItemReqCtrl params ... " + params.confirmStatus);
-              query.equalTo("confirmStatus", params.confirmStatus);
-              query.equalTo("reqExpired", false);
+          if(params.sendResponse !== undefined) {
+              console.log("## inside  SendItemReqCtrl params ... " + params.sendResponse);
+              query.equalTo("sendResponse", params.sendResponse);
               query.equalTo("sendRequest", true);
               query.equalTo("deleteFlag", false);
           }
       }
       query.find({
           success: function(results) {
-              //alert("Successfully retrieved " + results.length + " requests!");
+              console.log("Successfully retrieved " + results.length + " requests!");
               for (var i = 0; i < results.length; i++) {
                   var object = results[i];
                   $scope.sendReqList.push({objectId: object.id, userid: object.get("userid")});
@@ -357,9 +375,7 @@ angular.module('starter.controllers', [])
         query.first({
           success: function(object) {
             object.set("driverid", localStorage.getItem("username"));
-            object.set("sendRequest", false);
-            object.set("confirmStatus", "Y");
-            object.set("deleteFlag", true);
+            object.set("sendResponse", true);
             object.save();
             alert ("Request Job Successfully..");
               
@@ -399,7 +415,7 @@ angular.module('starter.controllers', [])
             var query = new Parse.Query(SendItemRequest);
             query.equalTo("userid", userid);
             query.equalTo("sendRequest", true);
-            query.equalTo("confirmStatus", "N");
+            query.equalTo("sendResponse", false);
             query.equalTo("deleteFlag", false);
             
             query.first({
@@ -422,8 +438,7 @@ angular.module('starter.controllers', [])
         var SendItemRequest = Parse.Object.extend("SendItemRequest");
         var sendItemObject = new SendItemRequest();
         sendItemObject.set("userid", localStorage.getItem("username"));
-        sendItemObject.set("confirmStatus", "N");
-        sendItemObject.set("reqExpired", false);
+        sendItemObject.set("sendResponse", false);
         sendItemObject.set("sendRequest", true);
         sendItemObject.set("deleteFlag", false);
         sendItemObject.save(null, {});
@@ -436,20 +451,19 @@ angular.module('starter.controllers', [])
           
           if(params !== undefined) {
               console.log("## inside  ReqLoadingIntervalCtrl params ... $scope.getSendItemResponse " + params);
-              if(params.confirmStatus !== undefined) {
-                  console.log("## inside  ReqLoadingIntervalCtrl params ... $scope.getSendItemResponse filter " + params.confirmStatus);
-                  query.equalTo("confirmStatus", params.confirmStatus);
+              if(params.sendResponse !== undefined) {
+                  console.log("## inside  ReqLoadingIntervalCtrl params ... $scope.getSendItemResponse filter " + params.sendResponse);
+                  query.equalTo("sendResponse", params.sendResponse);
                   query.equalTo("userid", localStorage.getItem("username"));
-                  query.equalTo("sendRequest", false);
                   query.equalTo("deleteFlag", false);
               }
           }
           query.find({
               success: function(results) {
-                  console.log("Successfully retrieved " + results.length + " confirmStatus!");
+                  console.log("Successfully retrieved " + results.length + " confirm response from driver!");
                   for (var i = 0; i < results.length; i++) {
                       var object = results[i];
-                      console.log("confirmStatus : " + object.id + ' - ' + object.get("confirmStatus"));
+                      console.log("sendResponse : " + object.id + ' - ' + object.get("sendResponse"));
                   }
                   
                   // condition if someone confirm the request
@@ -465,9 +479,39 @@ angular.module('starter.controllers', [])
                   $scope.fight();
                   
                   // Load Static data
-                  // Display only when finish loading and got response
+                  // Display only when finish loading and got response from driver
                   if (results.length > 0) {
-                    $scope.couriers = [{name: 'Courier 1'}, {name: 'Courier 2'}, {name: 'Courier 3'}, {name: 'Courier 4'}];
+                      $scope.couriers = [];
+                      
+                      var sendItemRequest = Parse.Object.extend("SendItemRequest");
+                      var query = new Parse.Query(sendItemRequest);
+
+                      console.log("## Response from driver received..");
+                      query.equalTo("sendResponse", true);
+                      query.equalTo("sendRequest", true);
+                      query.equalTo("deleteFlag", false);
+                    
+                      query.find({
+                          success: function(results) {
+                              console.log("Successfully retrieved driver list " + results.length + " requests!");
+                              for (var i = 0; i < results.length; i++) {
+                                  var object = results[i];
+                                  $scope.couriers.push({objectId: object.id, userid: object.get("driverid")});
+
+                                  console.log("getting request from username : " + object.id + ' - ' + object.get("driverid"));
+                              }
+                              $ionicLoading.hide();
+                          },
+                          error: function(error) {
+                              $ionicLoading.hide()
+                              $ionicPopup.alert({
+                            title: 'Error',
+                              content: 'Error in retrieving driver list.'
+                            }).then(function(res) {
+                              console.log('Error in retrieving driver list.');
+                            });
+                          }
+                      });
                       
                     // load service list of couriers
                     $scope.chats = Chats.all();
@@ -488,7 +532,7 @@ angular.module('starter.controllers', [])
         var stop;
         
         // Call response parse service
-        $scope.getSendItemResponse(localStorage.getItem("username"), {confirmStatus: 'Y'});
+        $scope.getSendItemResponse(localStorage.getItem("username"), {sendResponse: true});
         
         $scope.fight = function() {
           
@@ -505,7 +549,7 @@ angular.module('starter.controllers', [])
             } else {
               console.log("## Inside ReqLoadingIntervalCtrl -  ... $scope.fight.. repeat calling " + $scope.confirmStatusFlag);
               // wair for someone confirm until timeout
-              $scope.getSendItemResponse(localStorage.getItem("username"), {confirmStatus: 'Y'});
+              $scope.getSendItemResponse(localStorage.getItem("username"), {sendResponse: true});
             }
           }, 2000);
         };
@@ -566,11 +610,11 @@ angular.module('starter.controllers', [])
 .controller('CourierReqCtrl', function($scope) {
     console.log("## Inside CourierReqCtrl for courier controler for username : " + localStorage.getItem("username"));
     
-    $scope.saveCourierReq = function(userid, confirmStatus) {
+    $scope.saveCourierReq = function(userid, sendResponse) {
         var SendItemRequest = Parse.Object.extend("SendItemRequest");
         var sendItemObject = new SendItemRequest();
         sendItemObject.set("userid", localStorage.getItem("username"));
-        sendItemObject.set("confirmStatus", confirmStatus);
+        sendItemObject.set("sendResponse", sendResponse);
         sendItemObject.save(null, {});
     };
 })
