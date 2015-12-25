@@ -20,6 +20,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       // org.apache.cordova.statusbar required
       StatusBar.styleLightContent();
     }
+    
+    // Parse initialization
+    Parse.initialize("QulU4nLdAg84OoM0Yvd8LfE8dwNNqD2o4UW4mo1f", "yl8ZDO4kpwmtQYrvS95zjWVwkSwnlyC5cznauYxT");
+    
   });
 })
 
@@ -32,14 +36,31 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   $stateProvider
 
   // setup an abstract state for the tabs directive
-    .state('tab', {
+  .state('tab', {
     url: '/tab',
     abstract: true,
     templateUrl: 'templates/tabs.html'
   })
+  
+  // Login state
+  .state('login', {
+    url: '/',
+    templateUrl: 'templates/login.html',
+    controller: 'LoginCtrl'
+  })
+  .state('signup', {
+    url: '/signup',
+    templateUrl: 'templates/signup.html',
+    controller: 'LoginCtrl'
+  })  
+  .state('signin', {
+    url: '/signin',
+    templateUrl: 'templates/signin.html',
+    controller: 'LoginCtrl'
+  })
+  // End Login controller
 
   // Each tab has its own nav history stack:
-
   .state('tab.dash', {
     url: '/dash',
     views: {
@@ -79,7 +100,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     views: {
       'tab-dash': {
         templateUrl: 'templates/page-receive-couriers.html',
-        controller: 'PageRecvCourierCtrl'
+        //controller: 'PageRecvCourierCtrl'
+        controller: 'ReqLoadingIntervalCtrl'
       }
     }
   })
@@ -115,6 +137,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     })
 
+  .state('tab.courier', {
+    url: '/courier',
+    views: {
+      'tab-courier': {
+        templateUrl: 'templates/tab-courier.html',
+        controller: 'CourierCtrl'
+      }
+    }
+  })
+  
+  .state('tab.page-courier-checking', {
+    url: '/page-courier-checking',
+    views: {
+      'tab-courier': {
+        templateUrl: 'templates/page-courier-checking.html',
+        controller: 'SendItemReqCtrl'
+      }
+    }
+  })
+    
   .state('tab.account', {
     url: '/account',
     views: {
@@ -126,6 +168,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  //$urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise("/");
 
 });
