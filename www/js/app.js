@@ -97,6 +97,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   // Show list of accepted courier
   .state('tab.page-receive-couriers', {
     url: '/page-receive-couriers',
+    chache: false,
     views: {
       'tab-dash': {
         templateUrl: 'templates/page-receive-couriers.html',

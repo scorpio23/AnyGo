@@ -341,6 +341,7 @@ angular.module('starter.controllers', [])
               query.equalTo("sendResponse", params.sendResponse);
               query.equalTo("sendRequest", true);
               query.equalTo("deleteFlag", false);
+              query.equalTo("status", "NEW");
           }
       }
       query.find({
@@ -376,6 +377,8 @@ angular.module('starter.controllers', [])
           success: function(object) {
             object.set("driverid", localStorage.getItem("username"));
             object.set("sendResponse", true);
+            object.set("waiting", true);
+            object.set("status", "RES");
             object.save();
             alert ("Request Job Successfully..");
               
@@ -394,7 +397,6 @@ angular.module('starter.controllers', [])
         $scope.format = 'M/d/yy h:mm:ss a';
         $scope.blood_1 = 100;
         $scope.blood_2 = 120;
-        
         $scope.confirmStatusFlag = 0;
         
         console.log("## Inside Request ReqLoadingIntervalCtrl controler with interval");
@@ -408,70 +410,77 @@ angular.module('starter.controllers', [])
               showDelay: 0
         })
         
-        // process selected customer by courier
+        // function to delete if existing request by customer is exist
         $scope.updateUserOrder = function(userid) {
             console.log("## Searching user and delete if exist : " + userid);
             var SendItemRequest = Parse.Object.extend("SendItemRequest");
             var query = new Parse.Query(SendItemRequest);
             query.equalTo("userid", userid);
             query.equalTo("sendRequest", true);
-            query.equalTo("sendResponse", false);
             query.equalTo("deleteFlag", false);
             
-            query.first({
-              success: function(object) {
-                //object.set("driverid", localStorage.getItem("username"));
-                object.set("deleteFlag", true);
-                object.save();
-                console.log("## User existing, mark this request deleted : " + userid);
+            console.log("## Find query start ");
+            query.find({
+              success: function(results) {
+                  console.log("## updateUserOrder - return value for user's case deletion : " + results.length);
+                  for (var i = 0; i < results.length; i++) {
+                    var object = results[i];
+                    object.set("deleteFlag", true);
+                    object.save();
+                    console.log("## User existing, mark this request deleted : " + userid);
+                  }
               },
               error: function(error) {
                 alert("Error: " + error.code + " " + error.message);
               }
-            });
+            }).then(function() {
+                // Insert send item request from customer
+                var SendItemRequest = Parse.Object.extend("SendItemRequest");
+                var sendItemObject = new SendItemRequest();
+                sendItemObject.set("userid", localStorage.getItem("username"));
+                sendItemObject.set("sendResponse", false);
+                sendItemObject.set("sendRequest", true);
+                sendItemObject.set("deleteFlag", false);
+                sendItemObject.set("status", "NEW");  
+                sendItemObject.save(null, {});
+                console.log("## Inside Request ReqLoadingIntervalCtrl - success insert request for " + localStorage.getItem("username"));
+            }).then(function() {
+                $scope.getSendItemResponse(localStorage.getItem("username"), {sendResponse: true});  
+            })
+            
+            console.log("## Find query end ");
         }
         
-        // Update user request if exist
-        $scope.updateUserOrder(localStorage.getItem("username"));
-        
-        // Insert send item request from customer
-        var SendItemRequest = Parse.Object.extend("SendItemRequest");
-        var sendItemObject = new SendItemRequest();
-        sendItemObject.set("userid", localStorage.getItem("username"));
-        sendItemObject.set("sendResponse", false);
-        sendItemObject.set("sendRequest", true);
-        sendItemObject.set("deleteFlag", false);
-        sendItemObject.save(null, {});
-        console.log("## Inside Request ReqLoadingIntervalCtrl - success insert request for " + localStorage.getItem("username"));
-
         $scope.getSendItemResponse = function(username, params) {
           console.log("## Inside ReqLoadingIntervalCtrl -  ... $scope.getSendItemResponse.. ");
           var sendItemRequest = Parse.Object.extend("SendItemRequest");
-          var query = new Parse.Query(sendItemRequest);
+          var queryMain = new Parse.Query(sendItemRequest);
           
           if(params !== undefined) {
               console.log("## inside  ReqLoadingIntervalCtrl params ... $scope.getSendItemResponse " + params);
               if(params.sendResponse !== undefined) {
                   console.log("## inside  ReqLoadingIntervalCtrl params ... $scope.getSendItemResponse filter " + params.sendResponse);
-                  query.equalTo("sendResponse", params.sendResponse);
-                  query.equalTo("userid", localStorage.getItem("username"));
-                  query.equalTo("deleteFlag", false);
+                  queryMain.equalTo("sendResponse", params.sendResponse);
+                  queryMain.equalTo("userid", localStorage.getItem("username"));
+                  queryMain.equalTo("deleteFlag", false);
+                  queryMain.equalTo("waiting", true);
               }
           }
-          query.find({
-              success: function(results) {
-                  console.log("Successfully retrieved " + results.length + " confirm response from driver!");
-                  for (var i = 0; i < results.length; i++) {
-                      var object = results[i];
-                      console.log("sendResponse : " + object.id + ' - ' + object.get("sendResponse"));
+          console.log("## step go here ");
+          queryMain.find({
+              success: function(resultsRes) {
+                  console.log("Successfully retrieved " + resultsRes.length + " confirm response from driver!");
+                  for (var i = 0; i < resultsRes.length; i++) {
+                      var object = resultsRes[i];
+                      console.log("sendResponse : " + object.id + ' - ' + object.get("deleteFlag"));
                   }
                   
                   // condition if someone confirm the request
-                  if (results.length > 0) {
-                    console.log("## Inside ReqLoadingIntervalCtrl -  ... responseConfirm.. " + results.length);
+                  if (resultsRes.length > 0) {
+                    console.log("## Inside ReqLoadingIntervalCtrl -  ... responseConfirm count.. " + resultsRes.length);
                     
                     //return true;
-                    $scope.confirmStatusFlag = results.length;
+                    $scope.confirmStatusFlag = resultsRes.length;
                     
                   } 
 
@@ -480,7 +489,7 @@ angular.module('starter.controllers', [])
                   
                   // Load Static data
                   // Display only when finish loading and got response from driver
-                  if (results.length > 0) {
+                  if (resultsRes.length > 0) {
                       $scope.couriers = [];
                       
                       var sendItemRequest = Parse.Object.extend("SendItemRequest");
@@ -488,39 +497,42 @@ angular.module('starter.controllers', [])
 
                       console.log("## Response from driver received..");
                       query.equalTo("sendResponse", true);
+                      query.equalTo("waiting", true);
+                      query.equalTo("userid", localStorage.getItem("username"));
                       query.equalTo("sendRequest", true);
                       query.equalTo("deleteFlag", false);
-                    
+                      query.equalTo("status", "RES");
+                      
                       query.find({
-                          success: function(results) {
-                              console.log("Successfully retrieved driver list " + results.length + " requests!");
-                              for (var i = 0; i < results.length; i++) {
-                                  var object = results[i];
-                                  $scope.couriers.push({objectId: object.id, userid: object.get("driverid")});
+                          success: function(resultsCourierCfr) {
+                              console.log("Successfully retrieved driver list " + resultsCourierCfr.length + " requests!");
+                              for (var i = 0; i < resultsCourierCfr.length; i++) {
+                                  var object = resultsCourierCfr[i];
+                                  $scope.couriers.push({objectId: object.id, userid: object.get("driverid"), face: 'https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png'});
 
-                                  console.log("getting request from username : " + object.id + ' - ' + object.get("driverid"));
+                                  console.log("getting response from driver id : " + object.id + ' - ' + object.get("driverid"));
                               }
                               $ionicLoading.hide();
                           },
                           error: function(error) {
                               $ionicLoading.hide()
                               $ionicPopup.alert({
-                            title: 'Error',
-                              content: 'Error in retrieving driver list.'
-                            }).then(function(res) {
-                              console.log('Error in retrieving driver list.');
-                            });
+                                title: 'Error',
+                                  content: 'Error in retrieving driver list.'
+                                }).then(function(res) {
+                                  console.log('Error in retrieving driver list.');
+                                });
                           }
                       });
                       
                     // load service list of couriers
+                    /***
                     $scope.chats = Chats.all();
                     $scope.remove = function(chat) {
                         Chats.remove(chat);
                     };
+                    ***/
                   }
-                  
-                  
               },
               error: function(error) {
                   $ionicLoading.hide()
@@ -528,14 +540,9 @@ angular.module('starter.controllers', [])
               }
           });
         }
-    
+        
         var stop;
-        
-        // Call response parse service
-        $scope.getSendItemResponse(localStorage.getItem("username"), {sendResponse: true});
-        
         $scope.fight = function() {
-          
           // Don't start a new fight if we are already fighting
           if ( angular.isDefined(stop) ) return;
           
@@ -573,6 +580,16 @@ angular.module('starter.controllers', [])
           // Make sure that the interval is destroyed too
           $scope.stopFight();
         });
+        
+        // Update user request if exist
+        $scope.updateUserOrder(localStorage.getItem("username"));
+          
+        // Call response parse service
+        //$scope.getSendItemResponse(localStorage.getItem("username"), {sendResponse: true});  
+          
+        
+        
+        
       }]
 )
       
