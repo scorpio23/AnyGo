@@ -8,6 +8,23 @@
     height:65%;
 }
 
+/**
+.button {
+    position: relative;
+}
+
+
+.button i {
+    position: absolute;
+    top: 10%;
+    right: 0%;
+    transform: translate(-10%, -10%);
+    -webkit-transform: translate(-10%, -10%);
+    -moz-transform: translate(-10%, -10%);
+    -o-transform: translate(-50%, -50%);
+}
+***/
+
 .controls {
   margin-top: 10px;
   border: 1px solid transparent;

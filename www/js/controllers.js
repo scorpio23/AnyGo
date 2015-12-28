@@ -392,8 +392,8 @@ angular.module('starter.controllers', [])
 })
 
 // Customer to request to send item to courier
-.controller('ReqLoadingIntervalCtrl', ['$scope', '$interval', '$ionicLoading', 'Chats',
-      function($scope, $interval, $ionicLoading, Chats) {
+.controller('ReqLoadingIntervalCtrl', ['$scope', '$interval', '$ionicLoading', 'Chats', '$ionicPopup', 
+      function($scope, $interval, $ionicLoading, Chats, $ionicPopup) {
         $scope.format = 'M/d/yy h:mm:ss a';
         $scope.blood_1 = 100;
         $scope.blood_2 = 120;
@@ -401,14 +401,26 @@ angular.module('starter.controllers', [])
         
         console.log("## Inside Request ReqLoadingIntervalCtrl controler with interval");
         
-        $ionicLoading.show({
-              template: '<ion-spinner icon="android"></ion-spinner>',
-              //content: 'Loading',
-              //animation: 'fade-in',
-              showBackdrop: true,
-              maxWidth: 200,
-              showDelay: 0
-        })
+        
+        $ionicLoading.show({ 
+            scope: $scope, 
+            template: '</button><ion-spinner icon="android"></ion-spinner><button class="button button-clear" ng-click="cancelSearch()" style="color: #FFFFFF; right: -43%; margin-top: -40%;"><i class="ion-ios-close" item-icon-right"></i>',
+            //template: '</button><ion-spinner icon="android">',
+            showBackdrop: true,
+            maxWidth: 10,
+            showDelay: 0,
+            duration: 20000
+        });
+        
+        $scope.cancelSearch = function () {
+            $ionicLoading.hide();
+            $ionicPopup.alert({
+              title: 'Request Timeout',
+              content: 'Sorry, there is no Courier right now, please try again.'
+            }).then(function(res) {
+              console.log('Sorry, there is no Courier right now, please try again.  : ' + localStorage.getItem("username"));
+            });
+        }
         
         // function to delete if existing request by customer is exist
         $scope.updateUserOrder = function(userid) {
