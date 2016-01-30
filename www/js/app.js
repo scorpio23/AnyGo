@@ -157,6 +157,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     }
   })
+  
+  .state('tab.page-courier-checking-detail', {
+    url: '/page-courier-checking/:userid',
+    views: {
+      'tab-courier': {
+        templateUrl: 'templates/page-courier-checking-detail.html',
+        controller: 'SendItemReqDetailCtrl'
+      }
+    }
+  })
     
   .state('tab.account', {
     url: '/account',

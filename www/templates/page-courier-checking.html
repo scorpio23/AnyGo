@@ -1,11 +1,16 @@
 <ion-view view-title="Courier Available Job">
   <ion-content>
      <ion-list>
+	<!--
       <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="sendReq in sendReqList" 
                 type="item-text-wrap" ng-click="confirmSendOrder(sendReq.userid)">
+	-->
+		<ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="sendReq in sendReqList" 
+                type="item-text-wrap" href="#/tab/page-courier-checking/{{sendReq.userid}}">
+			
         <img ng-src="https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png">
         <h2>Request from : {{sendReq.userid}}</h2>
-        <p>{{sendReq.objectId}}</p>
+        <p>Customer Location : {{sendReq.objectId}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
 
         <ion-option-button class="button-assertive" ng-click="remove(chat)">

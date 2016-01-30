@@ -312,7 +312,40 @@ angular.module('starter.controllers', [])
   })
 })
 
-// Get customer List request to send item for courier page
+
+// Get customer List request in courier page
+.controller('SendItemReqDetailCtrl', function($scope, $http, $ionicLoading, $state, $stateParams) {
+    console.log("## Inside Request SendItemReqDetailCtrl controler");
+    
+	console.log($stateParams.userid);
+	$scope.userid = $stateParams.userid;
+	
+    // process selected customer by courier
+    $scope.confirmSendOrder = function(userid) {
+        console.log("## inside  SendItemReqCtrl method confirmSendOrder to confirm user : " + userid);
+        var SendItemRequest = Parse.Object.extend("SendItemRequest");
+        var query = new Parse.Query(SendItemRequest);
+        query.equalTo("userid", userid);
+        
+        query.first({
+          success: function(object) {
+            object.set("driverid", localStorage.getItem("username"));
+            object.set("sendResponse", true);
+            object.set("waiting", true);
+            object.set("status", "RES");
+            object.save();
+            alert ("Request Job Successfully..");
+              
+            $state.go('tab.courier');
+          },
+          error: function(error) {
+            alert("Error: " + error.code + " " + error.message);
+          }
+        });
+    }
+})
+
+// Get customer List request in courier page
 .controller('SendItemReqCtrl', function($scope, $http, $ionicLoading, $state) {
       console.log("## Inside Request SendItemReqCtrl controler");
 
@@ -409,7 +442,7 @@ angular.module('starter.controllers', [])
             showBackdrop: true,
             maxWidth: 10,
             showDelay: 0,
-            duration: 20000
+            duration: 60000
         });
         
         $scope.cancelSearch = function () {
