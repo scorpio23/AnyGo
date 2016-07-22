@@ -14,10 +14,10 @@
 <ion-view view-title="Accepted Courier">
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in chats" type="item-text-wrap" href="#/tab/page-courier-confirmation/{{chat.id}}">
-        <img ng-src="{{chat.face}}">
-        <h2>{{chat.name}}</h2>
-        <p>{{chat.lastText}}</p>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="courier in couriers" type="item-text-wrap" href="#/tab/page-courier-confirmation/{{courier.id}}">
+        <img ng-src="{{courier.face}}">
+        <h2>{{courier.userid}}</h2>
+        <p>{{courier.objectId}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
 
         <ion-option-button class="button-assertive" ng-click="remove(chat)">

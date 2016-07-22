@@ -97,6 +97,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   // Show list of accepted courier
   .state('tab.page-receive-couriers', {
     url: '/page-receive-couriers',
+    chache: false,
     views: {
       'tab-dash': {
         templateUrl: 'templates/page-receive-couriers.html',
@@ -153,6 +154,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       'tab-courier': {
         templateUrl: 'templates/page-courier-checking.html',
         controller: 'SendItemReqCtrl'
+      }
+    }
+  })
+  
+  .state('tab.page-courier-checking-detail', {
+    url: '/page-courier-checking/:userid',
+    views: {
+      'tab-courier': {
+        templateUrl: 'templates/page-courier-checking-detail.html',
+        controller: 'SendItemReqDetailCtrl'
       }
     }
   })

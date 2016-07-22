@@ -2,6 +2,7 @@
     "jscodehints.detectedExclusions": [
         "/Users/scorpio23/Projects/AnyGo/www/js/direction.js",
         "/Users/scorpio23/Projects/AnyGo/www/js/app.js",
-        "/Users/scorpio23/Projects/AnyGo/plugins/cordova-plugin-geolocation/tests/tests.js"
+        "/Users/scorpio23/Projects/AnyGo/plugins/cordova-plugin-geolocation/tests/tests.js",
+        "/Users/scorpio23/Projects/AnyGo/plugins/cordova-plugin-geolocation/www/blackberry10/GeolocationProxy.js"
     ]
 }
